@@ -62,7 +62,7 @@ fi
 # pre-req software
 if [[ "${OS_TYPE}" == "arch" ]]; then
 	echo "[INFO] Installing prerequisite packages for Arch Linux systems"
-	sudo pacman -Sy --noconfirm mono sdl12-compat sdl_image sdl zenity
+	sudo pacman -Sy --noconfirm mono sdl12-compat sdl_image sdl
 
 elif [[ "${OS_TYPE}" =~ "debian" ]]; then
 	echo "[INFO] Installing prerequisite packages for Debian-like systems"
