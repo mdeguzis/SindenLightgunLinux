@@ -4,4 +4,4 @@
 # Currently not implemented for auto-detect until
 # I can figure out how to distinguish the two devices in UDEV
 #
-echo ${HOME}/.local/bin/sindenlightgun-p2start.sh | at -t `date --date='5 seconds' "+%m%d%H%M.%S"`
+echo ${HOME}/.local/bin/sindenlightgun-p2-start.sh | at -t `date --date='5 seconds' "+%m%d%H%M.%S"`

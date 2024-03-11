@@ -19,7 +19,7 @@ This repo contains all the Sinden Lightgun Linux utilities for setup and configu
 - Copy current binaries to the `${HOME}/SindenLightgunLinux/bin`
 - Add USB `udev` `sinden-lightgun.rules` for auto detection
     - P1-Gun: Plugging in/out will auto start/stop the device
-    - P2-Gun == Not Implemented; Must run the `sindenlightgun-p2start` utility in `PORTS`
+    - P2-Gun == Not Implemented; Must run the `sindenlightgun-p2-start` utility in `PORTS`
     - Auto-Detect on boot == Questionable
 
 ## Report bugs
@@ -117,7 +117,7 @@ Can be found [here](Examples.md)
 - Is the Lockfile there? Yes -- head to discord, lets figure this out
 - Is the Lockfile there? No
     - StopAll Devices `${HOME}/$HOME/.local/bin/sindenlightgun-stopall.sh`
-    - Manually start P1 `${HOME}/$HOME/.local/bin/sindenlightgun-p1start.sh`
+    - Manually start P1 `${HOME}/$HOME/.local/bin/sindenlightgun-p1-start.sh`
     - Check for the lockfile `ls /tmp/Light*`
     - Still not working? -- head to discord, lets figure this out
 
