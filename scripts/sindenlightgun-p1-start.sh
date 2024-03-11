@@ -2,5 +2,5 @@
 
 ${HOME}/.local/bin/sindenlightgun-p1-remove.sh
 
-cd SINDEN_BIN
+cd LINUX_FILES
 sudo mono-service LightgunMono.exe

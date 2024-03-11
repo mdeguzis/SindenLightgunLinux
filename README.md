@@ -15,7 +15,7 @@ This repo contains all the Sinden Lightgun Linux utilities for setup and configu
 - Clean up old Sinden files
 - Backup existing gun configurations
 - Copy current borders to `<retoarch_install>/retroarch/overlays/`
-- Copy current RetroPie scripts to `${HOME}/$HOME/.local/bin/g/`
+- Copy current RetroPie scripts to `${HOME}/$HOME/.local/bin`
 - Copy current binaries to the `${HOME}/SindenLightgunLinux/bin`
 - Add USB `udev` `sinden-lightgun.rules` for auto detection
     - P1-Gun: Plugging in/out will auto start/stop the device

@@ -45,6 +45,10 @@ echo "[INFO] Downloading ${DRIVERS_URL} to ${SOFTWARE_ROOT}"
 curl -Lo "${SOFTWARE_ROOT}/sinden.zip" "${DRIVERS_URL}"
 unzip "${SOFTWARE_ROOT}/sinden.zip" -d "${SOFTWARE_ROOT}"
 LINUX_FILES="$(find "${SOFTWARE_ROOT}" -name "SteamdeckVersion")/Lightgun"
+if [[ -z "${LINUX_FILES}" ]];then
+	echo "[ERROR] Failed to find Linux files!"
+	exit 1
+fi
 
 # Linux Scripts
 echo "[INFO] Copying Sinden Utilities to ${SOFTWARE_ROOT}"
