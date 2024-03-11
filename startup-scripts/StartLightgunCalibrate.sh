@@ -1,5 +1,8 @@
 #!/bin/bash
 cd "${HOME}/software/sinden"
-mono-service LightgunMono.exe sdl steam joystick
+
+# Prefer Proton AppImage route, mono is glitchy for this use-case
+#mono-service LightgunMono.exe sdl steam joystick
+./launch-with-proton.sh windows-binaries/Lightgun.exe sdl steam joystick
 exit
 

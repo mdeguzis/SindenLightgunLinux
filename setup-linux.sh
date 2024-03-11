@@ -3,7 +3,8 @@
 set -e -o pipefail
 
 # https://sindenlightgun.com/drivers/
-VERSION=$(git symbolic-ref --short -q HEAD)
+LINUX_VERSION="LinuxBeta2.05c.zip"
+WINDOWS_VERSION="SindenLightgunWindowsSoftwareV2.05beta.zip"
 GIT_ROOT=$(git rev-parse --show-toplevel)
 SOFTWARE_ROOT="${HOME}/software/sinden"
 TS=$(date +%s)
