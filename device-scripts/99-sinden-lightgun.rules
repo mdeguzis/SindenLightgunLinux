@@ -1,0 +1,2 @@
+SUBSYSTEM=="usb", ACTION=="add", ATTRS{idVendor}=="32e4", ATTRS{idProduct}=="9210", RUN+="/bin/bash BIN_SCRIPTS/sindenlightgun-p1-add.sh"
+SUBSYSTEM=="usb", ACTION=="remove", ATTRS{idVendor}=="32e4", ATTRS{idProduct}=="9210", RUN+="/bin/bash BIN_SCRIPTS/sindenlightgun-p1-remove.sh"
