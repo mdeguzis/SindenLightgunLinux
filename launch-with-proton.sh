@@ -2,7 +2,12 @@
 # Description: This script launches any of the Windows EXE's with Proton
 
 WINDOWS_EXE=$1
+if [[ -z "${WINDOWS_EXE}" ]]; then
+	echo "[ERROR] Missing Windows exe as the primary argument!"
+	exit 1
+fi
 APP_ROOT="${HOME}/Applications"
+PROTON_PREFIX="${HOME}/software/sinden/proton-prefix"
 PROTON_VERSION="wine-staging_ge-proton_8-26-x86_64.AppImage"
 PROTON_APPIMAGE="${APP_ROOT}/Proton/${PROTON_VERSION}"
 mkdir -p "${APP_ROOT}"
@@ -40,8 +45,7 @@ update_binary ()
 			elif echo  "${this_url}" | grep -qE "http.*x.*64.*AppImage$"; then
 				dl_url="${this_url}"
 				break
-			elif echo "${this_url}" | grep -qE "http.*${name}-.*linux.*x64.*tar.gz$"; then
-				dl_url="${this_url}"
+			elif echo "${this_url}" | grep -qE "http.*${name}-.*linux.*x64.*tar.gz$"; then dl_url="${this_url}"
 				break
 			fi
 		fi
@@ -60,6 +64,7 @@ update_binary ()
 	eval "${cmd}"
 
 	app_image=$(ls -ltr /tmp/${name}*AppImage | tail -n 1 | awk '{print $9}')
+	chmod +x "${app_image}"
 	if [[ -n "${folder_target}" ]]; then
 		mkdir -p "${APP_ROOT}/${folder_target}"
 		mv -v "${app_image}" "${APP_ROOT}/${folder_target}"
@@ -77,9 +82,15 @@ else
 	echo "[INFO] Found Proton AppImage: ${PROTON_APPIMAGE}"
 fi
 
-# Create our prefix in a predictable spot?
+# Do we need to install anything into the prefix with winetricks?
+# If so, install this with setup-linux.sh first and only configure here
+# Checking...
+# https://simpler-website.pages.dev/html/2021/1/protontricks/
+# python3 -m pip install --user pipx
+# python3 -m pipx ensurepath protontricks
+# protontricks --gui
 
 # Run the windows EXE with the prefix
-echo "[INFO] Executing '${WINDOWS_EXE}' with Proton"
-${PROTON_APPIMAGE} "${WINDOWS_EXE}"
+echo "[INFO] Executing '${WINDOWS_EXE}' in prefix '${PROTON_PREFIX}' with Proton"
+WINEPREFIX=${PROTON_PREFIX} ${PROTON_APPIMAGE} "${WINDOWS_EXE}"
 echo "[INFO] Done!"
