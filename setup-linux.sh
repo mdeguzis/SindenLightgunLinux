@@ -115,8 +115,5 @@ fi
 # Finish
 ############################
 
-echo -e "\n[INFO] Configuring lightgun..."
-cd ${HOME}/software/sinden
-mono LightgunMono.exe steam joystick sdl
-
-echo "[INFO] Done!"
+echo -e "\n[INFO] Done!"
+echo "[INFO] Now run ${SOFTWARE_ROOT}/configure-lightgun.sh to complete setup and calibration of the lightgun"
