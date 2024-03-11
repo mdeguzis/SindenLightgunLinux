@@ -59,7 +59,7 @@ git branch checkout VERSION_NAME
 Configure Sinden Lightgun dependencies, utilities, and borders. These scripts will install/update the software as needed, but not touch an existing configuration file(s).
 
 ```
-cd ${HOME}/sinden-lightgun-linux;
+cd sinden-lightgun-linux
 ./setup-linux.sh;
 ```
 

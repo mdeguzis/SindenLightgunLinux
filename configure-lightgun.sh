@@ -4,7 +4,5 @@ set -e -o pipefail
 
 echo "[INFO] Configuring/calibrating lightgun"
 cd ${HOME}/software/sinden
+mono LightgunMono.exe steam joystick sdl
 
-# Prefer using Proton, mono is glitchy...
-#mono LightgunMono.exe steam joystick sdl
-./launch-with-proton.sh windows-binaries/Lightgun.exe steam joystick sdl
