@@ -3,7 +3,7 @@ cd "${HOME}/software/sinden"
 
 echo "[INFO] Starting Sinden lightgun"
 sleep 2
-mono LightgunMono.exe joystick
+mono-service LightgunMono.exe joystick
 if [[ $? -eq 0 ]]; then
 	echo "started" > /tmp/sinden-lightgun.state
 else
