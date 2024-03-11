@@ -103,6 +103,9 @@ sudo sed -i "s|BIN_SCRIPTS|${BIN_DIR}|g" "/etc/udev/rules.d/99-sinden-lightgun.r
 sudo sudo udevadm control --reload-rules
 sudo udevadm trigger
 
+echo -e "\n[INFO] Copying Sinden device scripts to ${BIN_DIR}."
+sudo cp -v ${GIT_ROOT}/device-scripts/*.sh "${BIN_DIR}"
+
 # Copy per-arch Binaries
 
 if [[ -e ${GIT_ROOT}/arch/${ARCH} ]]; then
