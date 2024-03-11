@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e -o pipefail
-
 # https://sindenlightgun.com/drivers/
 LINUX_VERSION="LinuxBeta2.05c.zip"
 WINDOWS_VERSION="SindenLightgunWindowsSoftwareV2.05beta.zip"
@@ -45,6 +43,15 @@ echo "[INFO] Copying Sinden software to ${SOFTWARE_ROOT}"
 cp -r ${GIT_ROOT}/* "${SOFTWARE_ROOT}"
 find "${SOFTWARE_ROOT}" -name "*.sh" -exec chmod +x {} \;
 
+echo "[INFO] Copying UDEV rules"
+#sudo cp "${GIT_ROOT}/udev/99-sinden-lightgun.rules" "/etc/udev/rules.d/"
+#sudo sed -i "s|SOFTWARE_ROOT|${SOFTWARE_ROOT}|g" "/etc/udev/rules.d/99-sinden-lightgun.rules"
+
+# This part needs some work...
+echo "[INFO] Reloading UDEV rules"
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+
 # Unlock the OS if we are using ChimeraOS/Steam Deck
 if which frzr-unlock &> /dev/null; then
 	echo "[INFO] unlocking immutable OS"
@@ -83,13 +90,18 @@ echo -e "[INFO] Configuring user groups"
 group_found=0
 for group in serial uucp uucm dialout;
 do
+	echo "[INFO] Checking group ${group}"
 	if grep -q "${group}" /etc/group; then
 		echo "[INFO] Found group ${group}, adding ${USER} to it"
 		sudo usermod -a -G "${group}" "${USER}"
-		newgrp "${group}"
 		group_found=1
 	fi
 done
+
+# reload the groups
+# Doing this in the loop seems stops the group checks, sicn newgrp does some kind of interactive login
+# TODO fix...
+
 if [[ ${group_found} -ne 1 ]]; then 
 	echo "[WARN] Could not find a valid group to add ${USER} to"
 fi
@@ -117,4 +129,5 @@ fi
 ############################
 
 echo -e "[INFO] Done!"
-echo "[INFO] Now run ${SOFTWARE_ROOT}/configure-lightgun.sh to complete setup and calibration of the lightgun"
+echo "[INFO] Please log out and back in to apply group permission updates"
+echo "[INFO] After this, run ${SOFTWARE_ROOT}/configure-lightgun.sh to complete setup and calibration of the lightgun"
