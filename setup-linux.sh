@@ -43,9 +43,10 @@ echo "[INFO] Copying Sinden software to ${SOFTWARE_ROOT}"
 cp -r ${GIT_ROOT}/* "${SOFTWARE_ROOT}"
 find "${SOFTWARE_ROOT}" -name "*.sh" -exec chmod +x {} \;
 
+# TODO, make this a user selection to write the correct udev rule...
 echo "[INFO] Copying UDEV rules"
-#sudo cp "${GIT_ROOT}/udev/99-sinden-lightgun.rules" "/etc/udev/rules.d/"
-#sudo sed -i "s|SOFTWARE_ROOT|${SOFTWARE_ROOT}|g" "/etc/udev/rules.d/99-sinden-lightgun.rules"
+sudo cp "${GIT_ROOT}/udev/99-sinden-lightgun-wired.rules" "/etc/udev/rules.d/"
+sudo sed -i "s|SOFTWARE_ROOT|${SOFTWARE_ROOT}|g" "/etc/udev/rules.d/99-sinden-lightgun-wired.rules"
 
 # This part needs some work...
 echo "[INFO] Reloading UDEV rules"
@@ -131,3 +132,4 @@ fi
 echo -e "[INFO] Done!"
 echo "[INFO] Please log out and back in to apply group permission updates"
 echo "[INFO] After this, run ${SOFTWARE_ROOT}/configure-lightgun.sh to complete setup and calibration of the lightgun"
+echo "[INFO] You can test your lightgun at any time after this with '${HOME}/software/sinden/TestLightgun.sh'"

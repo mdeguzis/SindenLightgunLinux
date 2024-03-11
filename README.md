@@ -20,7 +20,7 @@ PLEASE NOTE: This is a fork of the original repository, geared towards the Linux
 - [Create an issue](https://github.com/SindenLightgun/SindenLightgunLinux/issues).
 - [Join the Discord](https://discord.com/invite/B67hgt4)
 
-# Installation
+## Installation
 
 ```
 cd ${HOME}
@@ -28,6 +28,13 @@ git clone https://github.com/mdeguzis/sinden-lightgun-linux
 cd sinden-lightgun-linux
 ./setup-linux.sh
 ```
+
+## Manually test your lightgun
+
+Run the following after installation for a quick manual test:
+```
+${HOME}/software/sinden/TestLightgun.sh
+````
 
 ### Update
 
@@ -104,6 +111,10 @@ User Interface->
 ```
 
 ## Troubleshooting
+
+### Logs
+
+The current (supposed) state is written to `/tmp/sinden-lightgun.state` when a stop/start script is ran.
 
 ### Gun test not working
 

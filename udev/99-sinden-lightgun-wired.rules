@@ -1,0 +1,2 @@
+SUBSYSTEM=="usb", ACTION=="add", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="of39", RUN+="/bin/bash SOFTWARE_ROOT/startup-scripts/StartLightgunStart.sh"
+SUBSYSTEM=="usb", ACTION=="remove", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="of39", RUN+="/bin/bash SOFTWARE_ROOT/startup-scripts/StartLightgunStop.sh"
