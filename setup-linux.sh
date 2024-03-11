@@ -66,7 +66,7 @@ if [[ "${OS_TYPE}" == "arch" ]]; then
 
 elif [[ "${OS_TYPE}" =~ "debian" ]]; then
 	echo "[INFO] Installing prerequisite packages for Debian-like systems"
-	sudo pacman -Sy --noconfirm mono sdl12-compat sdl_image sdl zenity
+	sudo apt-get install -y at mono-complete v4l-utils libsdl1.2-dev
 fi
 
 # Relock OS if using SteamOS/Steam Deck
@@ -79,13 +79,14 @@ fi
 # usermod
 ############################
 # This is a bit hacky (from shipped the readme)
-echo -e "\n[INFO] Configuring user groups"
+echo -e "[INFO] Configuring user groups"
 group_found=0
 for group in serial uucp uucm dialout;
 do
-	if groups | grep -q "${group}"; then
+	if grep -q "${group}" /etc/group; then
 		echo "[INFO] Found group ${group}, adding ${USER} to it"
 		sudo usermod -a -G "${group}" "${USER}"
+		newgrp "${group}"
 		group_found=1
 	fi
 done
@@ -106,7 +107,7 @@ cp -r ${GIT_ROOT}/overlays/retroarch/* ${retroarch_overlays_dir}
 
 # For the time being, assume ES-DE-compliant MAME dir
 # This also assumes internal storage...TODO to fix this... or add more folder detection
-echo -e "[INFO] Copying Sinden Border Overlays for any available MAME systems"
+echo "[INFO] Copying Sinden Border Overlays for any available MAME systems"
 if [[ -d "${HOME}/Emulation/roms/mame/" ]]; then
 	cp -r ${GIT_ROOT}/overlays/mame/* "${HOME}/Emulation/roms/mame/"
 fi
@@ -115,5 +116,5 @@ fi
 # Finish
 ############################
 
-echo -e "\n[INFO] Done!"
+echo -e "[INFO] Done!"
 echo "[INFO] Now run ${SOFTWARE_ROOT}/configure-lightgun.sh to complete setup and calibration of the lightgun"
