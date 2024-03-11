@@ -1,26 +1,19 @@
 # Sinden Lightgun - Linux Utilities
 
 - [License](License.md)
-
-BETA - this is currently in a BETA phase. The Pi is setup is properly configured. Unclear if the 32/64 bit binaries were properly included from the [original driver files](https://www.sindenlightgun.com/drivers/).
+- BETA - this is currently in a BETA phase. It is unclear if the 32/64 bit binaries were properly included from the [original driver files](https://www.sindenlightgun.com/drivers/).
+- The files contained within have been pulled from the latest Linux beta drivers page
+- Until there is more automation in place, the files in this Git repository must be manually synced with any new release from that page.
 
 Want to test them out and [let us know](https://github.com/SindenLightgun/SindenLightgunLinux/issues/1)?
+
+
 
 ## About
 
 - [Version Info](Version.md)
 
-This repo contains all the Sinden Lightgun Linux utilities for setup and configuration. After successfully running the setup scripts it will:
-
-- Clean up old Sinden files
-- Backup existing gun configurations
-- Copy current borders to `<retoarch_install>/retroarch/overlays/`
-- Copy current RetroPie scripts to `${HOME}/$HOME/.local/bin`
-- Copy current binaries to the `${HOME}/SindenLightgunLinux/bin`
-- Add USB `udev` `sinden-lightgun.rules` for auto detection
-    - P1-Gun: Plugging in/out will auto start/stop the device
-    - P2-Gun == Not Implemented; Must run the `sindenlightgun-p2-start` utility in `PORTS`
-    - Auto-Detect on boot == Questionable
+PLEASE NOTE: This is a fork of the original repository, geared towards the Linux beta release!
 
 ## Report bugs
 
@@ -29,16 +22,10 @@ This repo contains all the Sinden Lightgun Linux utilities for setup and configu
 
 # Installation
 
-## Download
-
-### New install
-
-This will download the latest version of the Sinden Lightgun utilities
-
 ```
-cd ${HOME}; \
-git clone https://github.com/SindenLightgun/SindenLightgunLinux.git; \
-cd SindenLightgunLinux;
+cd ${HOME}
+git clone https://github.com/mdeguzis/sinden-lightgun-linux
+cd sinden-lightgun-linux
 ./setup-linux.sh
 ```
 
@@ -59,53 +46,62 @@ Re-run setup if there were Sinden utility changes. This should be able to be run
 
 ### Change to a new version
 
-If you are a new install, you will be on the default branch of the repo, typically the most current. If you want to change the version of either a new install or an update to a newer version, you can grab all versions, list them, and change via:
+If you are a new install, you will be on the default "mainline" branch of the repo, typically the most current. If you want to change the version of either a new install or an update to a newer version, you can grab all versions, list them, and change via:
 
 ```
-cd ${HOME}/SindenLightgunLinux
+cd ${HOME}/sidnen-lightgun-linux
 git fetch; git branch
 git branch checkout VERSION_NAME
 ```
-
 
 ## Configure / Setup
 
 Configure Sinden Lightgun dependencies, utilities, and borders. These scripts will install/update the software as needed, but not touch an existing configuration file(s).
 
 ```
-cd ${HOME}/SindenLightgunLinux;
+cd ${HOME}/sinden-lightgun-linux;
 ./setup-linux.sh;
 ```
 
-## Per Architecture Binaries
+The software will be installed to `${HOME}/software/sinden`
 
-If the set-up script does not determine your `arch` properly (it should indicate this), you will need to manually copy the files over. Determine which architecture you are running on and perform the following command based on your arch.
-
-### Pi/Arm
-
+If you wish to reconfigure/recalibrate outside of setup:
 ```
-cp -r arch/Pi-ARM/* bin/
-```
-
-### x86-32bit
-
-```
-cp -r arch/x86_32/* bin/
-```
-
-### x86-64bit
-
-```
-cp -r arch/x86_64/* bin/
+cd ${HOME}/software/sinden
+mono LightgunMono.exe steam joystick sdl
 ```
 
 ## Finish
 
 You should now reboot to have EmulationStation include the Lightgun
 
-## Example Configs
+## Emulator Setups
 
-Can be found [here](Examples.md)
+
+### MAME
+
+Install full Mame, avoid using packages like RetroArch and Steam EmuDeck for now.  This guide assumes you know a bit
+
+You need to do a few things, I haven't re-installed so I may have missed something but we need to do  this.  On the Mame screen where you select roms, go down to General Settings, we want to do a few things
+
+1) Make sure Joystick input is supported
+2) Remove weird joystick settings like deadzone (these make sense for joysticks but not our lightguns)
+3) Disable joystick movement in the menu (this is very annoying otherwise)
+
+1&2)
+```
+Advanced options->
+Joystick = On
+Joystick Deadzone = 0
+Joystick Saturation = 1
+Joystick Threshold = 0
+```
+
+3)
+```
+Input Assignments->
+User Interface->
+```
 
 ## Troubleshooting
 

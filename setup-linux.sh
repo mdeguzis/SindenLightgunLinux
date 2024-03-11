@@ -3,16 +3,19 @@
 set -e -o pipefail
 
 # https://sindenlightgun.com/drivers/
-RELEASE="Beta"
-VERSION="2.05c"
-DRIVERS_URL="https://www.sindenlightgun.com/software/Linux${RELEASE}${VERSION}.zip"
+VERSION=$(git symbolic-ref --short -q HEAD)
 GIT_ROOT=$(git rev-parse --show-toplevel)
 SOFTWARE_ROOT="${HOME}/software/sinden"
 TS=$(date +%s)
 BIN_DIR="${HOME}/.local/bin"
 CONFIG_BACKUP="${HOME}/.config/sinden/backups"
 
+############################
+# Pre-requisites
+############################
+
 # Get OS type
+# This may not be needed anymore with how the Beta release works
 OS_TYPE=$(cat /etc/*release* | awk -F'=' '/ID_LIKE/ {print $2}')
 if [[ "${OS_TYPE}" == "arch" ]]; then
 	OS_LIKE="arch"
@@ -22,13 +25,13 @@ elif [[ "${OS_TYPE}" =~ "debian" ]]; then
 fi
 
 # Get Arch
+# This may not be needed anymore with how the Beta release works
 ARCH=$(uname -m)
 if [[ "$ARCH" == *"arm"* ]]; then
     ARCH="Pi-ARM"
 fi
 
 # Cleanup anything from a previous install
-echo -e "\n[INFO] Cleaning previous Sinden Border Overlays"
 rm -rf ${SOFTWARE_ROOT}
 
 # Folders
@@ -36,94 +39,84 @@ mkdir -p ${BIN_DIR}
 mkdir -p "${SOFTWARE_ROOT}"
 mkdir -p "${CONFIG_BACKUP}"
 
-# remove udev rules
-echo -e "\n[INFO] Cleaning Sinden udev rules"
-sudo rm -rf /etc/udev/rules.d/*sinden-lightgun*
-
-# Download latest drivers
-echo "[INFO] Downloading ${DRIVERS_URL} to ${SOFTWARE_ROOT}"
-curl -Lo "${SOFTWARE_ROOT}/sinden.zip" "${DRIVERS_URL}"
-unzip "${SOFTWARE_ROOT}/sinden.zip" -d "${SOFTWARE_ROOT}"
-LINUX_FILES="$(find "${SOFTWARE_ROOT}" -name "SteamdeckVersion")/Lightgun"
-if [[ -z "${LINUX_FILES}" ]];then
-	echo "[ERROR] Failed to find Linux files!"
-	exit 1
-fi
-
 # Linux Scripts
-echo "[INFO] Copying Sinden Utilities to ${SOFTWARE_ROOT}"
-cp -v ${GIT_ROOT}/scripts/*.sh ${HOME}/.local/bin
+echo "[INFO] Copying Sinden software to ${SOFTWARE_ROOT}"
+cp -v ${GIT_ROOT}/* "${SOFTWARE_ROOT}"
+find "${SOFTWARE_ROOT}" -name "*.sh" -exec chmod +x {} \;
 
-# Update bin paths in scripts
-find ${HOME}/.local/bin -name "*.sh" -exec sed -i "s|LINUX_FILES|${LINUX_FILES}|g" {} \;
-find ${HOME}/.local/bin -name "*.sh" -exec sed -i "s|SOFTWARE_ROOT|${SOFTWARE_ROOT}|g" {} \;
-find ${HOME}/.local/bin -name "*.sh" -exec sed -i "s|LINUX_FILES|${LINUX_FILES}|g" {} \;
-find ${HOME}/.local/bin -name "*.sh" -exec chmod +x {} \;
+# Unlock the OS if we are using ChimeraOS/Steam Deck
+if which frzr-unlock &> /dev/null; then
+	echo "[INFO] unlocking immutable OS"
+	sudo frzr-unlock
+	sudo pacman-key --init
+	sudo pacman-key --populate archlinux
+elif which steamos-readonly &> /dev/null; then
+	echo "[INFO] unlocking immutable OS"
+	sudo frzr-unlock
+	sudo steamos-readonly disable
+	sudo pacman-key --init
+	sudo pacman-key --populate holo
+fi
 
 # pre-req software
 if [[ "${OS_TYPE}" == "arch" ]]; then
-	echo "[INFO] Installing prerequisite packages for Arch Linux"
+	echo "[INFO] Installing prerequisite packages for Arch Linux systems"
 	sudo pacman -Sy --noconfirm mono sdl12-compat sdl_image sdl
 
 elif [[ "${OS_TYPE}" =~ "debian" ]]; then
-	echo "[INFO] Installing prerequisite packages for Arch Linux"
+	echo "[INFO] Installing prerequisite packages for Debian-like systems"
 	sudo pacman -Sy --noconfirm mono sdl12-compat sdl_image sdl
 fi
 
+# Relock OS if using SteamOS/Steam Deck
+if which steamos-readonly &> /dev/null; then
+	echo "[INFO] Relocking SteamOS"
+	sudo steamos-readonly enable
+fi
+
+############################
+# usermod
+############################
+# This is a bit hacky (from shipped the readme)
+echo -e "\n[INFO] Configuring user groups"
+group_found=0
+for group in serial uucp uucm dialout;
+do
+	if groups | grep -q "${group}"; then
+		echo "[INFO] Found group ${group}, adding ${USER} to it"
+		usermod -a -G "${group}" "${USER}"
+		group_found=1
+	fi
+done
+if [[ ${group_found} -ne 1 ]]; then 
+	echo "[WARN] Could not find a valid group to add ${USER} to"
+fi
+
+############################
 # Borders
+############################
 echo -e "\nCopying Sinden Border Overlays for Retroarch"
 if [[ -d "${HOME}/.var/app/org.libretro.RetroArch" ]]; then
 	retroarch_overlays_dir=/"${HOME}/.var/app/org.libretro.RetroArch/config/retroarch/overlays"
 else
 	retroarch_overlays_dir="${HOME}/.config/retroarch/overlay"
 fi
-cp -v ${GIT_ROOT}/borders/retroarch-borders/* ${retroarch_overlays_dir}
+cp -v ${GIT_ROOT}/overlays/retroarch/* ${retroarch_overlays_dir}
 
-# Binary Directory Configs
-echo -e "\n[INFO] Copying Configurations."
-cp -v "${GIT_ROOT}/configs/test.bmp" ${BIN_DIR}
-
-HAS_BACKUPS=0
-for configfile in ${GIT_ROOT}/configs/*.config; do
-    CONFIG=$(basename $configfile)
-    if [[ -f ${BIN_DIR}/${CONFIG} ]]; then
-        echo "[INFO] ${CONFIG} Configurations already exist. Creating backup."
-        cp -v ${BIN_DIR}/${CONFIG} ${CONFIG_BACKUP}/${CONFIG}.bak.${VERSION}.${TS}
-        HAS_BACKUPS=1
-    else
-        cp -v ${configfile} ${BIN_DIR}
-    fi
-done
-
-if [[ ${HAS_BACKUPS} -eq 1 ]]; then
-    echo -e "\n[INFO] All backups:"
-    ls -la ${CONFIG_BACKUP}/*bak*
-fi
-
-# Sinden udev rules
-echo -e "\n[INFO] Copying Sinden udev rules."
-sudo cp -v "${GIT_ROOT}/device-scripts/99-sinden-lightgun.rules" "/etc/udev/rules.d/"
-sudo sed -i "s|BIN_SCRIPTS|${BIN_DIR}|g" "/etc/udev/rules.d/99-sinden-lightgun.rules"
-sudo sudo udevadm control --reload-rules
-sudo udevadm trigger
-
-echo -e "\n[INFO] Copying Sinden device scripts to ${BIN_DIR}."
-sudo cp -v ${GIT_ROOT}/device-scripts/*.sh "${BIN_DIR}"
-
-# Copy per-arch Binaries
-
-if [[ -e ${GIT_ROOT}/arch/${ARCH} ]]; then
-    echo "Copying ${ARCH} binaries."
-    cp -rv ${GIT_ROOT}/arch/${ARCH}/* ${BIN_DIR}/
+# For the time being, assume ES-DE-compliant MAME dir
+# This also assumes internal storage...TODO to fix this... or add more folder detection
+echo -e "\nCopying Sinden Border Overlays for any available MAME systems"
+if [[ -d "${HOME}/Emulation/roms/mame/" ]]; then
+	cp -v ${GIT_ROOT}/overlays/mame/* "${HOME}/Emulation/roms/mame/"
 fi
 
 
-# Leave this out of the above just to make sure stuff was copied
-if [[ -f ${BIN_DIR}/LightgunMono.exe ]]; then
-    echo "[INFO] Properly copied arch/${ARCH} binaries."
-    echo "[INFO] Sinden Lightgun sucessfully installed for this operating system."
-    echo "[INFO] You will need to configure per emulator as needed."
-else
-    echo -e "\n[INFO] Could not properly determine your system architecture [${ARCH}]."
-    echo "[INFO] Follow the README to copy the proper files to the 'bin/' folder"
-fi
+############################
+# Finish
+############################
+
+echo -e "\n[INFO] Configuring lightgun..."
+cd ${HOME}/software/sinden
+mono LightgunMono.exe steam joystick sdl
+
+echo "[INFO] Done!"
