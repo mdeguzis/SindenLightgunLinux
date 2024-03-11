@@ -1,7 +1,6 @@
 # Sinden Lightgun - Linux Utilities
 
 - [License](License.md)
-- [Documentation](SindenLightgunDocumentationV1.05_Linux.pdf)
 
 BETA - this is currently in a BETA phase. The Pi is setup is properly configured. Unclear if the 32/64 bit binaries were properly included from the [original driver files](https://www.sindenlightgun.com/drivers/).
 
@@ -15,12 +14,12 @@ This repo contains all the Sinden Lightgun Linux utilities for setup and configu
 
 - Clean up old Sinden files
 - Backup existing gun configurations
-- Copy current borders to `/opt/retropie/emulators/retroarch/overlays/`
-- Copy current RetroPie scripts to `/home/pi/RetroPie/roms/ports/`
-- Copy current binaries to the `/home/pi/SindenLightgunLinux/bin`
+- Copy current borders to `<retoarch_install>/retroarch/overlays/`
+- Copy current RetroPie scripts to `${HOME}/$HOME/.local/bin/g/`
+- Copy current binaries to the `${HOME}/SindenLightgunLinux/bin`
 - Add USB `udev` `sinden-lightgun.rules` for auto detection
     - P1-Gun: Plugging in/out will auto start/stop the device
-    - P2-Gun == Not Implemented; Must run the `SindenLightgun-P2Start` utility in `PORTS`
+    - P2-Gun == Not Implemented; Must run the `sindenlightgun-p2start` utility in `PORTS`
     - Auto-Detect on boot == Questionable
 
 ## Report bugs
@@ -37,11 +36,10 @@ This repo contains all the Sinden Lightgun Linux utilities for setup and configu
 This will download the latest version of the Sinden Lightgun utilities
 
 ```
-cd /home/pi; \
+cd ${HOME}; \
 git clone https://github.com/SindenLightgun/SindenLightgunLinux.git; \
-cd SindenLightgunLinux; \
-echo ""; \
-VERSION=$(git symbolic-ref --short -q HEAD); echo "Current Version ${VERSION}"
+cd SindenLightgunLinux;
+./setup-linux.sh
 ```
 
 ### Update
@@ -49,14 +47,14 @@ VERSION=$(git symbolic-ref --short -q HEAD); echo "Current Version ${VERSION}"
 Update the files of your current version:
 
 ```
-cd /home/pi/SindenLightgunLinux
+cd ${HOME}/SindenLightgunLinux
 git pull
 ```
 
 Re-run setup if there were Sinden utility changes. This should be able to be run anytime without negative affects.
 
 ```
-./setup-retropie.sh
+./setup-linux.sh
 ```
 
 ### Change to a new version
@@ -64,7 +62,7 @@ Re-run setup if there were Sinden utility changes. This should be able to be run
 If you are a new install, you will be on the default branch of the repo, typically the most current. If you want to change the version of either a new install or an update to a newer version, you can grab all versions, list them, and change via:
 
 ```
-cd /home/pi/SindenLightgunLinux
+cd ${HOME}/SindenLightgunLinux
 git fetch; git branch
 git branch checkout VERSION_NAME
 ```
@@ -75,10 +73,8 @@ git branch checkout VERSION_NAME
 Configure Sinden Lightgun dependencies, utilities, and borders. These scripts will install/update the software as needed, but not touch an existing configuration file(s).
 
 ```
-cd /home/pi/SindenLightgunLinux; \
-chmod 755 *.sh; \
-./setup-lightgun.sh; \
-./setup-retropie.sh; \
+cd ${HOME}/SindenLightgunLinux;
+./setup-linux.sh;
 ```
 
 ## Per Architecture Binaries
@@ -115,13 +111,13 @@ Can be found [here](Examples.md)
 
 ### Gun test not working
 
-- ssh into your RetroPie
+- ssh into your device
 - Plug the gun in
 - check for the `LightgunMono.exe.lock` Lockfile `ls /tmp/Light*`
 - Is the Lockfile there? Yes -- head to discord, lets figure this out
 - Is the Lockfile there? No
-    - StopAll Devices `/home/pi/RetroPie/roms/ports/SindenLightgun-StopAll.sh`
-    - Manually start P1 `/home/pi/RetroPie/roms/ports/SindenLightgun-P1Start.sh`
+    - StopAll Devices `${HOME}/$HOME/.local/bin/sindenlightgun-stopall.sh`
+    - Manually start P1 `${HOME}/$HOME/.local/bin/sindenlightgun-p1start.sh`
     - Check for the lockfile `ls /tmp/Light*`
     - Still not working? -- head to discord, lets figure this out
 
