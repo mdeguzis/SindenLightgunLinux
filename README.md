@@ -13,7 +13,7 @@ Want to test them out and [let us know](https://github.com/SindenLightgun/Sinden
 
 - [Version Info](Version.md)
 
-PLEASE NOTE: This is a fork of the original repository, geared towards the Linux beta release!
+PLEASE NOTE: This is a fork of the original repository, geared towards the Linux beta release! Please do not report issues with this setup to the Sinden developers unless you are very sure it's a core issue or bug!
 
 ## Report bugs
 
@@ -29,7 +29,9 @@ cd sinden-lightgun-linux
 ./setup-linux.sh
 ```
 
-## Manually test your lightgun
+The software will be installed to `${HOME}/software/sinden`. 
+
+### Manually test your lightgun
 
 Run the following after installation for a quick manual test:
 ```
@@ -63,27 +65,32 @@ git branch checkout VERSION_NAME
 
 ## Configure / Setup
 
-Configure Sinden Lightgun dependencies, utilities, and borders. These scripts will install/update the software as needed, but not touch an existing configuration file(s).
-
+To configure your lightgun
 ```
-cd sinden-lightgun-linux
-./setup-linux.sh;
+./configure-lightgun.sh
 ```
 
-The software will be installed to `${HOME}/software/sinden`
+## OS-specific guidance
 
-If you wish to reconfigure/recalibrate outside of setup:
-```
-cd ${HOME}/software/sinden
-mono LightgunMono.exe steam joystick sdl
-```
+### General
+
+This section will serve as a "quick start" guide for a few use-cases. Please see https://www.sindenwiki.org/wiki/Sinden_Wiki for complete documentation. In a nuteshell, the experience requires:
+* A working driver installation (Installation, stop, start, and/or plug and play automation)
+* A working border overlay for your mode of play
+   * Desktop / Steam Deck desktop mode: Gnome border extension (untested)
+   * Steam Deck GameMode border via plugin (untested)
+   * Borders enabled in your emulator or frontend of choice, such as Retroarch, MAME, or a frontend like Emulation Station.
+
+### SteamOS / Steam Deck
+TODO
+
+### All other Linux systems
+TODO
 
 ## Finish
 
-You should now reboot to have EmulationStation include the Lightgun
 
 ## Emulator Setups
-
 
 ### MAME
 
