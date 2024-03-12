@@ -1,4 +1,4 @@
-## Research
+# Research
 
 Links and topics to look into in order to get the experience as plug and play as possible.
 
