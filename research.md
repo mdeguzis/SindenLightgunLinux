@@ -11,9 +11,11 @@ Links and topics to look into in order to get the experience as plug and play as
 
 ## What is needed?
 
-Beyond starting the Sidnen lightgun service:
-* Game must support lightgun natively OR
+Beyond starting the Sidnen lightgun service, one of a few requirements needs to be fullfilled:
+* Game must support lightgun natively
 * Using a universal border in desktop mode (gnome extension)
+* Border enabled in an emulator or frontend
+* Border enabled in Steam's GameMode (Decky Loader plugin)
 
 ## Links
 
