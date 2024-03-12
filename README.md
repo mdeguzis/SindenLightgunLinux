@@ -115,6 +115,7 @@ User Interface->
 ### Logs
 
 The current (supposed) state is written to `/tmp/sinden-lightgun.state` when a stop/start script is ran.
+The full log can be foudn at `/tmp/sinden-lightgun.log`.
 
 ### Gun test not working
 

@@ -44,14 +44,14 @@ cp -r ${GIT_ROOT}/* "${SOFTWARE_ROOT}"
 find "${SOFTWARE_ROOT}" -name "*.sh" -exec chmod +x {} \;
 
 # TODO, make this a user selection to write the correct udev rule...
-echo "[INFO] Copying UDEV rules"
-sudo cp "${GIT_ROOT}/udev/99-sinden-lightgun-wired.rules" "/etc/udev/rules.d/"
-sudo sed -i "s|SOFTWARE_ROOT|${SOFTWARE_ROOT}|g" "/etc/udev/rules.d/99-sinden-lightgun-wired.rules"
-
-# This part needs some work...
-echo "[INFO] Reloading UDEV rules"
-sudo udevadm control --reload-rules
-sudo udevadm trigger
+#echo "[INFO] Copying UDEV rules"
+#sudo cp "${GIT_ROOT}/udev/99-sinden-lightgun-wired.rules" "/etc/udev/rules.d/"
+#sudo sed -i "s|SOFTWARE_ROOT|${SOFTWARE_ROOT}|g" "/etc/udev/rules.d/99-sinden-lightgun-wired.rules"
+#
+## This part needs some work...
+#echo "[INFO] Reloading UDEV rules"
+#sudo udevadm control --reload-rules
+#sudo udevadm trigger
 
 # Unlock the OS if we are using ChimeraOS/Steam Deck
 if which frzr-unlock &> /dev/null; then
