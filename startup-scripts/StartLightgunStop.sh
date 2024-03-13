@@ -1,12 +1,15 @@
 #!/bin/bash
 
 main () {
-	pkill "mono"
-	pkill "mono-service"
-	rm /tmp/LightgunMono* -f
+	echo -e "\n============================================="
+	echo "Sinden lightgun log (stop action)"
+	echo "Date: $(date)"
+	echo "============================================="
 	echo "Stopping Sinden lightgun"
-	echo "stopped" > /tmp/sinden-lightgun.state
-	echo "Wrote state to /tmp/sinden-lightgun.state"
+	sudo pkill "mono"
+	sudo pkill "mono-service"
+	sudo rm /tmp/LightgunMono* -f
+	echo "Done!"
 	exit
 }
 main 2>&1 | tee -a "/tmp/sinden-lightgun.log"

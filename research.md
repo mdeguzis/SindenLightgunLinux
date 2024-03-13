@@ -25,3 +25,14 @@ Beyond starting the Sidnen lightgun service, one of a few requirements needs to 
 * https://www.sindenwiki.org/wiki/FAQ#Q:_Does_the_Sinden_Lightgun_work_with_my_OS.3F
 * https://www.sindenwiki.org/wiki/Linux_Unix_Guide
 * https://github.com/AaronBPaden/whiteborder-aaronbpaden.gmail.com
+
+## Getting USB info for udev from udevadmn
+
+```
+journalctl -f
+```
+
+Plug in lighgun, then look for /dev/input lines. Example:
+```
+udevadm info -a -n input/js0 | less
+```

@@ -82,7 +82,13 @@ This section will serve as a "quick start" guide for a few use-cases. Please see
    * Borders enabled in your emulator or frontend of choice, such as Retroarch, MAME, or a frontend like Emulation Station.
 
 ### SteamOS / Steam Deck
-TODO
+
+#### Universal border box in Steam
+
+You can install the [Decky Loader](https://github.com/SteamDeckHomebrew/decky-loader) plugin [Reshadeck](https://github.com/safijari/Reshadeck). Aafter you have done this, download and install [Border.fx](https://github.com/Otakumouse/stormshade/blob/master/v4.X/reshade-shaders/Shader%20Library/Recommended/Border.fx) with this extension. This is the Steam Deck version of [ReShade](https://reshade.me/). Copy the shader file to `${HOME}/.local/share/gamescope/reshade/shaders`. Other files are marked executable, but I'm not sure if that is required. Restart Steam or reload the plugin from Decky Loader.
+
+More readining:
+* https://www.sindenwiki.org/wiki/Reshade
 
 ### All other Linux systems
 TODO
@@ -121,8 +127,8 @@ User Interface->
 
 ### Logs
 
-The current (supposed) state is written to `/tmp/sinden-lightgun.state` when a stop/start script is ran.
-The full log can be foudn at `/tmp/sinden-lightgun.log`.
+* Sevice logs (udev automatic star/stop) can be found at: `/tmp/sinden-lightgun.log`.
+* User initiated actions can be found at: `/tmp/sinden-lightgun.user.log`.
 
 ### Gun test not working
 

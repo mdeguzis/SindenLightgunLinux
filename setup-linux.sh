@@ -1,10 +1,12 @@
 #!/bin/bash
 
+set -e -o pipefail
+
 # https://sindenlightgun.com/drivers/
 LINUX_VERSION="LinuxBeta2.05c.zip"
 WINDOWS_VERSION="SindenLightgunWindowsSoftwareV2.05beta.zip"
 GIT_ROOT=$(git rev-parse --show-toplevel)
-SOFTWARE_ROOT="${HOME}/software/sinden"
+SOFTWARE_ROOT="/opt/sinden-lightgun"
 TS=$(date +%s)
 BIN_DIR="${HOME}/.local/bin"
 CONFIG_BACKUP="${HOME}/.config/sinden/backups"
@@ -31,27 +33,28 @@ if [[ "$ARCH" == *"arm"* ]]; then
 fi
 
 # Cleanup anything from a previous install
-rm -rf ${SOFTWARE_ROOT}
+sudo rm -rf ${SOFTWARE_ROOT}
 
 # Folders
 mkdir -p ${BIN_DIR}
-mkdir -p "${SOFTWARE_ROOT}"
+sudo mkdir -p "${SOFTWARE_ROOT}"
 mkdir -p "${CONFIG_BACKUP}"
 
 # Linux Scripts
 echo "[INFO] Copying Sinden software to ${SOFTWARE_ROOT}"
-cp -r ${GIT_ROOT}/* "${SOFTWARE_ROOT}"
-find "${SOFTWARE_ROOT}" -name "*.sh" -exec chmod +x {} \;
+sudo cp -r ${GIT_ROOT}/* "${SOFTWARE_ROOT}"
+find "${SOFTWARE_ROOT}" -name "*.sh" -exec sudo chmod +x {} \;
 
 # TODO, make this a user selection to write the correct udev rule...
-#echo "[INFO] Copying UDEV rules"
-#sudo cp "${GIT_ROOT}/udev/99-sinden-lightgun-wired.rules" "/etc/udev/rules.d/"
-#sudo sed -i "s|SOFTWARE_ROOT|${SOFTWARE_ROOT}|g" "/etc/udev/rules.d/99-sinden-lightgun-wired.rules"
-#
-## This part needs some work...
-#echo "[INFO] Reloading UDEV rules"
-#sudo udevadm control --reload-rules
-#sudo udevadm trigger
+echo "[INFO] Copying UDEV rules"
+sudo cp "${GIT_ROOT}/udev/99-sinden.rules" "/etc/udev/rules.d/"
+sudo sed -i "s|SOFTWARE_ROOT|${SOFTWARE_ROOT}|g" "/etc/udev/rules.d/99-sinden.rules"
+
+# This part needs some work...
+echo "[INFO] Reloading UDEV rules and service"
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+sudo systemctl restart udev.service
 
 # Unlock the OS if we are using ChimeraOS/Steam Deck
 if which frzr-unlock &> /dev/null; then
@@ -132,4 +135,4 @@ fi
 echo -e "[INFO] Done!"
 echo "[INFO] Please log out and back in to apply group permission updates"
 echo "[INFO] After this, run ${SOFTWARE_ROOT}/configure-lightgun.sh to complete setup and calibration of the lightgun"
-echo "[INFO] You can test your lightgun at any time after this with '${HOME}/software/sinden/TestLightgun.sh'"
+echo "[INFO] You can test your lightgun at any time after this with '${SOFTWARE_ROOT}/TestLightgun.sh'"

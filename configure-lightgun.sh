@@ -2,7 +2,10 @@
 
 set -e -o pipefail
 
-echo "[INFO] Configuring/calibrating lightgun"
-cd ${HOME}/software/sinden
-mono LightgunMono.exe steam joystick sdl
+main() {
+	echo "[INFO] Configuring/calibrating lightgun"
+	cd /opt/sinden-lightgun
+	mono LightgunMono.exe steam joystick sdl
+}
+main 2>&1 | tee -a "/tmp/sinden-lightgun.user.log"
 
