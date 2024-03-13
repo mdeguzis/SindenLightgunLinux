@@ -6,7 +6,8 @@ set -e -o pipefail
 LINUX_VERSION="LinuxBeta2.05c.zip"
 WINDOWS_VERSION="SindenLightgunWindowsSoftwareV2.05beta.zip"
 GIT_ROOT=$(git rev-parse --show-toplevel)
-SOFTWARE_ROOT="/opt/sinden-lightgun"
+#SOFTWARE_ROOT="/opt/sinden-lightgun"
+SOFTWARE_ROOT="$HOME/sinden-lightgun"
 TS=$(date +%s)
 BIN_DIR="${HOME}/.local/bin"
 CONFIG_BACKUP="${HOME}/.config/sinden/backups"
@@ -33,19 +34,19 @@ if [[ "$ARCH" == *"arm"* ]]; then
 fi
 
 # Cleanup anything from a previous install
-sudo rm -rf ${SOFTWARE_ROOT}
+rm -rf ${SOFTWARE_ROOT}
 
 # Folders
 mkdir -p ${BIN_DIR}
-sudo mkdir -p "${SOFTWARE_ROOT}"
+mkdir -p "${SOFTWARE_ROOT}"
 mkdir -p "${CONFIG_BACKUP}"
 
 # Linux Scripts
 echo "[INFO] Copying Sinden software to ${SOFTWARE_ROOT}"
-sudo cp -r ${GIT_ROOT}/* "${SOFTWARE_ROOT}"
-find "${SOFTWARE_ROOT}" -name "*.sh" -exec sudo chmod +x {} \;
+cp -r ${GIT_ROOT}/* "${SOFTWARE_ROOT}"
+find "${SOFTWARE_ROOT}" -name "*.sh" -exec chmod +x {} \;
+find "${SOFTWARE_ROOT}" -name "*.sh" -exec sed -i "s|SOFTWARE_ROOT|${SOFTWARE_ROOT}|g" {} \;
 
-# TODO, make this a user selection to write the correct udev rule...
 echo "[INFO] Copying UDEV rules"
 sudo cp "${GIT_ROOT}/udev/99-sinden.rules" "/etc/udev/rules.d/"
 sudo sed -i "s|SOFTWARE_ROOT|${SOFTWARE_ROOT}|g" "/etc/udev/rules.d/99-sinden.rules"

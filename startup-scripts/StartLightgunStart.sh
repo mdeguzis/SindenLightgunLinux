@@ -1,16 +1,18 @@
 #!/bin/bash
+# Runs as root user (udev rule invocation)
 
 main () {
 	echo -e "\n============================================="
 	echo "Sinden lightgun log (start action)"
 	echo "Date: $(date)"
 	echo "============================================="
-	cd "/opt/sinden-lightgun"
-	echo "[INFO] Executing Sinden lightgun script (Start) in /opt/sidnen-lightgun"
+	cd "SOFTWARE_ROOT"
+	ls -la
+	echo "[INFO] Executing Sinden lightgun script (Start) in SOFTWARE_ROOT"
 	echo "[INFO] Sinden USB device added at $(date)"
 	sleep 2
 	echo "[INFO] Starting mono-service for Lightgun"
-	sudo mono-service LightgunMono.exe joystick
+	mono LightgunMono.exe joystick
 	return_code=$?
 	if [[ ${return_code} -ne 0 ]]; then
 		echo "[ERROR] Command failed: 'mono-service LightgunMono.exe joystick'"

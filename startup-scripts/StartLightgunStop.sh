@@ -1,4 +1,5 @@
 #!/bin/bash
+# Runs as root user (udev invocation)
 
 main () {
 	echo -e "\n============================================="
