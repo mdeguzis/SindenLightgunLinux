@@ -18,7 +18,12 @@ echo "[INFO] Starting mono-service for Lightgun"
 # Check for active PID instead
 mono LightgunMono.exe joystick
 PID=$!
-if [[ -z ${PID} ]]; then
+# Wait 2-3 seconds to make sure PID is active
+sleep 2
+ps -p ${PID}
+rc=$?
+
+if [[ ${rc} -ne 0 ]]; then
 	echo "[ERROR] Command failed: 'mono LightgunMono.exe joystick'"
 	echo "[ERROR] Could not find PID for started process!"
 	ps -auwwx | grep LightgunMono

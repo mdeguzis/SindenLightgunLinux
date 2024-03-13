@@ -10,7 +10,10 @@ sleep 2
 # Use PID to see if it ran ok for now
 mono LightgunMono.exe sdl steam joystick
 PID=$!
-if [[ -z ${PID} ]]; then
+# Wait 2-3 seconds and check rc of PID
+ps -p ${PID}
+rc=$?
+if [[ ${rc} -eq 0 ]]; then
 	echo "[INFO] Calibration complete"
 	echo "[INFO] PID: ${PID}"
 	echo 
