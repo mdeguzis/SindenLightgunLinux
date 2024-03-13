@@ -3,8 +3,9 @@
 set -e -o pipefail
 
 # https://sindenlightgun.com/drivers/
-LINUX_VERSION="LinuxBeta2.05c.zip"
-WINDOWS_VERSION="SindenLightgunWindowsSoftwareV2.05beta.zip"
+VERSION="2.05c"
+RELEASE="Beta"
+DOWNLOAD_URL="https://www.sindenlightgun.com/software/Linux${RELEASE}${VERSION}.zip"
 GIT_ROOT=$(git rev-parse --show-toplevel)
 #SOFTWARE_ROOT="/opt/sinden-lightgun"
 SOFTWARE_ROOT="$HOME/sinden-lightgun"
@@ -16,9 +17,12 @@ CONFIG_BACKUP="${HOME}/.config/sinden/backups"
 # Pre-requisites
 ############################
 
-# Get OS type
-# This may not be needed anymore with how the Beta release works
-OS_TYPE=$(cat /etc/*release* | awk -F'=' '/ID_LIKE/ {print $2}')
+if [[ -f "/etc/os-release" ]]; then
+    OS_TYPE=$(cat "/etc/os-release" | awk -F'=' '/ID_LIKE/ {print $2}' || echo "OS Type: unknown")
+else
+    OS_TYPE=$(uname -s)
+fi
+
 if [[ "${OS_TYPE}" == "arch" ]]; then
 	OS_LIKE="arch"
 
@@ -40,6 +44,16 @@ rm -rf ${SOFTWARE_ROOT}
 mkdir -p ${BIN_DIR}
 mkdir -p "${SOFTWARE_ROOT}"
 mkdir -p "${CONFIG_BACKUP}"
+
+# Software license notes we cannot distribute the software
+# Download from drivers page directly
+echo "[INFO] Fetching Sinden software from ${DOWNLOAD_URL}"
+curl -Lo "/tmp/sinden-lightgun-linux.zip" "${DOWNLOAD_URL}"
+unzip -o "/tmp/sinden-lightgun-linux.zip" -d "/tmp"
+cp -r ${GIT_ROOT}/* "${SOFTWARE_ROOT}"
+cp /tmp/Linux${RELEASE}${VERSION}/SteamdeckVersion/Lightgun/*.so "${SOFTWARE_ROOT}"
+cp /tmp/Linux${RELEASE}${VERSION}/SteamdeckVersion/Lightgun/LightgunMono* "${SOFTWARE_ROOT}"
+chmod +x ${SOFTWARE_ROOT}/LightgunMono*
 
 # Linux Scripts
 echo "[INFO] Copying Sinden software to ${SOFTWARE_ROOT}"

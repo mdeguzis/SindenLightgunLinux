@@ -1,1 +1,6 @@
 bin/
+
+# Do not distribute any binaries or exes
+# This is against the Sinden license
+Lightgun*exe*
+*.so
