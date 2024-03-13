@@ -3,9 +3,9 @@ Description=Sinden Lightgun Service
 
 [Service]
 Type=simple
-ExecStart=%h/sinden-lightgun/startup-scripts/StartLightgunStart.sh
-ExecStop=%h/sinden-lightgun/startup-scripts/StartLightgunStop.sh
-ExecStartPre=%h/sinden-lightgun/startup-scripts/StartLightgunStop.sh
+ExecStart=/opt/sinden-lightgun/startup-scripts/StartLightgunStart.sh
+ExecStop=/opt/sinden-lightgun/startup-scripts/StartLightgunStop.sh
+ExecStartPre=/opt/sinden-lightgun/startup-scripts/StartLightgunStop.sh
 
 [Install]
 WantedBy=default.target

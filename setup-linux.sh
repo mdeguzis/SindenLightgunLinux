@@ -7,7 +7,7 @@ VERSION="2.05c"
 RELEASE="Beta"
 DOWNLOAD_URL="https://www.sindenlightgun.com/software/Linux${RELEASE}${VERSION}.zip"
 GIT_ROOT=$(git rev-parse --show-toplevel)
-SOFTWARE_ROOT="$HOME/sinden-lightgun"
+SOFTWARE_ROOT="/opt/sinden-lightgun"
 TS=$(date +%s)
 BIN_DIR="${HOME}/.local/bin"
 CONFIG_BACKUP="${HOME}/.config/sinden/backups"
@@ -38,18 +38,18 @@ fi
 
 # Folders
 mkdir -p ${BIN_DIR}
-mkdir -p "${SOFTWARE_ROOT}"
 mkdir -p "${CONFIG_BACKUP}"
 
 function install () {
-    rm -rf ${SOFTWARE_ROOT}
-    echo "[INFO] Fetching Sinden software from ${DOWNLOAD_URL}"
-    curl -Lo "/tmp/sinden-lightgun-linux.zip" "${DOWNLOAD_URL}"
-    unzip -o "/tmp/sinden-lightgun-linux.zip" -d "/tmp"
-    cp -r ${GIT_ROOT}/* "${SOFTWARE_ROOT}"
-    cp /tmp/Linux${RELEASE}${VERSION}/SteamdeckVersion/Lightgun/*.so "${SOFTWARE_ROOT}"
-    cp /tmp/Linux${RELEASE}${VERSION}/SteamdeckVersion/Lightgun/LightgunMono* "${SOFTWARE_ROOT}"
-    chmod +x ${SOFTWARE_ROOT}/LightgunMono*
+	sudo rm -rf ${SOFTWARE_ROOT}
+	sudo mkdir -p "${SOFTWARE_ROOT}"
+	echo "[INFO] Fetching Sinden software from ${DOWNLOAD_URL}"
+	curl -Lo "/tmp/sinden-lightgun-linux.zip" "${DOWNLOAD_URL}"
+	unzip -o "/tmp/sinden-lightgun-linux.zip" -d "/tmp"
+	sudo cp -r ${GIT_ROOT}/* "${SOFTWARE_ROOT}"
+	sudo cp /tmp/Linux${RELEASE}${VERSION}/SteamdeckVersion/Lightgun/*.so "${SOFTWARE_ROOT}"
+	sudo cp /tmp/Linux${RELEASE}${VERSION}/SteamdeckVersion/Lightgun/LightgunMono* "${SOFTWARE_ROOT}"
+	sudo chmod +x ${SOFTWARE_ROOT}/LightgunMono*
 }
 
 # Software license notes we cannot distribute the software
@@ -66,17 +66,18 @@ fi
 
 # Linux Scripts
 echo "[INFO] Copying Sinden software to ${SOFTWARE_ROOT}"
-cp -r ${GIT_ROOT}/* "${SOFTWARE_ROOT}"
-find "${SOFTWARE_ROOT}" -name "*.sh" -exec chmod +x {} \;
-find "${SOFTWARE_ROOT}" -name "*.sh" -exec sed -i "s|SOFTWARE_ROOT|${SOFTWARE_ROOT}|g" {} \;
+sudo cp -r ${GIT_ROOT}/* "${SOFTWARE_ROOT}"
+find "${SOFTWARE_ROOT}" -name "*.sh" -exec sudo chmod +x {} \;
+find "${SOFTWARE_ROOT}" -name "*.sh" -exec sudo sed -i "s|SOFTWARE_ROOT|${SOFTWARE_ROOT}|g" {} \;
 
 # Systemd
+# Don't start the service during setup, as it will fail if the lightgun is not connected
+# The udev rules will handlle this
 echo "[INFO] Creating systemd service 'sinden-lightgun.service'"
-cp "${GIT_ROOT}/systemd/sinden-lightgun.service" "${HOME}/.config/systemd/user/"
-systemctl --user daemon-reload
-systemctl --user disable sinden-lightgun.service
-systemctl --user enable sinden-lightgun.service
-systemctl --user start sinden-lightgun.service
+sudo cp "${GIT_ROOT}/systemd/sinden-lightgun.service" "/usr/lib/systemd/system/"
+sudo systemctl daemon-reload
+sudo systemctl disable sinden-lightgun.service
+sudo systemctl enable sinden-lightgun.service
 
 echo "[INFO] Copying UDEV rules"
 sudo cp "${GIT_ROOT}/udev/99-sinden.rules" "/etc/udev/rules.d/"

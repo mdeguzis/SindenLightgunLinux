@@ -6,7 +6,6 @@ echo "Sinden lightgun log (start action)"
 echo "Date: $(date)"
 echo "============================================="
 cd "SOFTWARE_ROOT"
-ls -la
 echo "[INFO] Executing Sinden lightgun script (Start) in SOFTWARE_ROOT"
 echo "[INFO] Sinden USB device added at $(date)"
 sleep 2
