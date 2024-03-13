@@ -7,7 +7,6 @@ VERSION="2.05c"
 RELEASE="Beta"
 DOWNLOAD_URL="https://www.sindenlightgun.com/software/Linux${RELEASE}${VERSION}.zip"
 GIT_ROOT=$(git rev-parse --show-toplevel)
-#SOFTWARE_ROOT="/opt/sinden-lightgun"
 SOFTWARE_ROOT="$HOME/sinden-lightgun"
 TS=$(date +%s)
 BIN_DIR="${HOME}/.local/bin"
@@ -18,7 +17,7 @@ CONFIG_BACKUP="${HOME}/.config/sinden/backups"
 ############################
 
 if [[ -f "/etc/os-release" ]]; then
-    OS_TYPE=$(cat "/etc/os-release" | awk -F'=' '/ID_LIKE/ {print $2}' || echo "OS Type: unknown")
+    OS_TYPE=$(cat "/etc/os-release" | awk -F'=' '/ID_LIKE/ {print $2}')
 else
     OS_TYPE=$(uname -s)
 fi
