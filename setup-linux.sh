@@ -47,6 +47,14 @@ cp -r ${GIT_ROOT}/* "${SOFTWARE_ROOT}"
 find "${SOFTWARE_ROOT}" -name "*.sh" -exec chmod +x {} \;
 find "${SOFTWARE_ROOT}" -name "*.sh" -exec sed -i "s|SOFTWARE_ROOT|${SOFTWARE_ROOT}|g" {} \;
 
+# Systemd
+echo "[INFO] Creating systemd service 'sinden-lightgun.service'"
+cp "${GIT_ROOT}/systemd/sinden-lightgun.service" "${HOME}/.config/systemd/user/"
+systemctl --user daemon-reload
+systemctl --user disable sinden-lightgun.service
+systemctl --user enable sinden-lightgun.service
+systemctl --user start sinden-lightgun.service
+
 echo "[INFO] Copying UDEV rules"
 sudo cp "${GIT_ROOT}/udev/99-sinden.rules" "/etc/udev/rules.d/"
 sudo sed -i "s|SOFTWARE_ROOT|${SOFTWARE_ROOT}|g" "/etc/udev/rules.d/99-sinden.rules"

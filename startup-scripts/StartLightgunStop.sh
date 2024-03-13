@@ -7,9 +7,9 @@ main () {
 	echo "Date: $(date)"
 	echo "============================================="
 	echo "Stopping Sinden lightgun"
-	sudo pkill "mono"
-	sudo pkill "mono-service"
-	sudo rm /tmp/LightgunMono* -f
+	pkill "mono"
+	pkill "mono-service"
+	rm /tmp/LightgunMono* -f
 	echo "Done!"
 	exit
 }

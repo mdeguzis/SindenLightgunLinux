@@ -1,3 +1,3 @@
-SUBSYSTEM=="input", KERNEL=="event*", ACTION=="add", ATTRS{name}=="Unknown SindenLightgun Mouse", MODE="0666", ENV{ID_INPUT_MOUSE}="0", RUN+="SOFTWARE_ROOT/startup-scripts/StartLightgunStart.sh"
-SUBSYSTEM=="input", KERNEL=="event*", ACTION=="remove", ATTRS{name}=="Unknown SindenLightgun Mouse", MODE="0666", ENV{ID_INPUT_MOUSE}="0", RUN+="SOFTWARE_ROOT/startup-scripts/StartLightgunStop.sh"
+SUBSYSTEM=="input", KERNEL=="event*", ACTION=="add", ATTRS{name}=="Unknown SindenLightgun Mouse", MODE="0666", ENV{ID_INPUT_MOUSE}="0", RUN+="/usr/bin/systemctl --user start sinden-lightgun.service"
+SUBSYSTEM=="input", KERNEL=="event*", ACTION=="remove", ATTRS{name}=="Unknown SindenLightgun Mouse", MODE="0666", ENV{ID_INPUT_MOUSE}="0", RUN+="/usr/bin/systemctl --user stop sinden-lightgun.service"
 
