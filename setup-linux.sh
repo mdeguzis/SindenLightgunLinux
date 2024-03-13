@@ -37,23 +37,33 @@ if [[ "$ARCH" == *"arm"* ]]; then
     ARCH="Pi-ARM"
 fi
 
-# Cleanup anything from a previous install
-rm -rf ${SOFTWARE_ROOT}
-
 # Folders
 mkdir -p ${BIN_DIR}
 mkdir -p "${SOFTWARE_ROOT}"
 mkdir -p "${CONFIG_BACKUP}"
 
+function install () {
+    rm -rf ${SOFTWARE_ROOT}
+    echo "[INFO] Fetching Sinden software from ${DOWNLOAD_URL}"
+    curl -Lo "/tmp/sinden-lightgun-linux.zip" "${DOWNLOAD_URL}"
+    unzip -o "/tmp/sinden-lightgun-linux.zip" -d "/tmp"
+    cp -r ${GIT_ROOT}/* "${SOFTWARE_ROOT}"
+    cp /tmp/Linux${RELEASE}${VERSION}/SteamdeckVersion/Lightgun/*.so "${SOFTWARE_ROOT}"
+    cp /tmp/Linux${RELEASE}${VERSION}/SteamdeckVersion/Lightgun/LightgunMono* "${SOFTWARE_ROOT}"
+    chmod +x ${SOFTWARE_ROOT}/LightgunMono*
+}
+
 # Software license notes we cannot distribute the software
 # Download from drivers page directly
-echo "[INFO] Fetching Sinden software from ${DOWNLOAD_URL}"
-curl -Lo "/tmp/sinden-lightgun-linux.zip" "${DOWNLOAD_URL}"
-unzip -o "/tmp/sinden-lightgun-linux.zip" -d "/tmp"
-cp -r ${GIT_ROOT}/* "${SOFTWARE_ROOT}"
-cp /tmp/Linux${RELEASE}${VERSION}/SteamdeckVersion/Lightgun/*.so "${SOFTWARE_ROOT}"
-cp /tmp/Linux${RELEASE}${VERSION}/SteamdeckVersion/Lightgun/LightgunMono* "${SOFTWARE_ROOT}"
-chmod +x ${SOFTWARE_ROOT}/LightgunMono*
+if [[ -f "${SOFTWARE_ROOT}/LightgunMono.exe" ]]; then
+    # Cleanup anything from a previous install
+    read -erp "[INFO] It appears the software already exists, overwrite? (y/N): " reinstall
+    if [[ "${reinstall}" == "y" ]]; then
+        install
+    fi
+else
+    install
+fi
 
 # Linux Scripts
 echo "[INFO] Copying Sinden software to ${SOFTWARE_ROOT}"
