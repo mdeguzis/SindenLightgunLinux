@@ -2,7 +2,7 @@
 Description=Sinden Lightgun Service
 
 [Service]
-Type=simple
+Type=forking
 ExecStart=/opt/sinden-lightgun/startup-scripts/StartLightgunStart.sh
 ExecStop=/opt/sinden-lightgun/startup-scripts/StartLightgunStop.sh
 ExecStartPre=/opt/sinden-lightgun/startup-scripts/StartLightgunStop.sh

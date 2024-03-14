@@ -8,7 +8,6 @@
 Want to test them out and [let us know](https://github.com/SindenLightgun/SindenLightgunLinux/issues/1)?
 
 
-
 ## About
 
 - [Version Info](Version.md)
@@ -37,6 +36,8 @@ Run the following after installation for a quick manual test:
 ```
 ${HOME}/software/sinden/TestLightgun.sh
 ````
+
+#You can also fire up https://hardwaretester.com/gamepad to verify basic functionality.
 
 ### Update
 

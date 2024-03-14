@@ -10,13 +10,14 @@ echo "[INFO] Executing Sinden lightgun script (Start) in SOFTWARE_ROOT"
 echo "[INFO] Sinden USB device added at $(date)"
 sleep 2
 echo "[INFO] Starting mono-service for Lightgun"
+
 # For some reason mono-serviec won't start successfully here, use mono and update systemd service
 #mono-service LightgunMono.exe joystick
-
 # The Lightgun mono application still throws exit status 0 when it doesn't find a lightgun
 # Check for active PID instead
-mono LightgunMono.exe joystick
+mono LightgunMono.exe joystick &
 PID=$!
+
 # Wait 2-3 seconds to make sure PID is active
 sleep 2
 ps -p ${PID}
@@ -30,6 +31,5 @@ if [[ ${rc} -ne 0 ]]; then
 else
 	echo "[INFO] Sinden USB device successfully started at $(date)"
 	echo "[INFO] PID: ${PID}"
-	exit 0
 fi
 
