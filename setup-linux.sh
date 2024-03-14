@@ -148,9 +148,9 @@ fi
 ############################
 echo -e "[INFO] Copying Sinden Border Overlays for Retroarch"
 if [[ -d "${HOME}/.var/app/org.libretro.RetroArch" ]]; then
-	retroarch_overlays_dir=/"${HOME}/.var/app/org.libretro.RetroArch/config/retroarch/overlays"
+	retroarch_overlays_dir="$(find ${HOME}/.local/share/flatpak/app/org.libretro.RetroArch -regex ".*libretro/overlays")/borders"
 else
-	retroarch_overlays_dir="${HOME}/.config/retroarch/overlay"
+	retroarch_overlays_dir="${HOME}/.config/retroarch/overlays/borders"
 fi
 cp -r ${GIT_ROOT}/overlays/retroarch/* ${retroarch_overlays_dir}
 
