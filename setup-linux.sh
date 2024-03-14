@@ -13,6 +13,21 @@ BIN_DIR="${HOME}/.local/bin"
 CONFIG_BACKUP="${HOME}/.config/sinden/backups"
 
 ############################
+# Functions
+############################
+function install () {
+	sudo rm -rf ${SOFTWARE_ROOT}
+	sudo mkdir -p "${SOFTWARE_ROOT}"
+	echo "[INFO] Fetching Sinden software from ${DOWNLOAD_URL}"
+	curl -Lo "/tmp/sinden-lightgun-linux.zip" "${DOWNLOAD_URL}"
+	unzip -o "/tmp/sinden-lightgun-linux.zip" -d "/tmp"
+	sudo cp -r ${GIT_ROOT}/* "${SOFTWARE_ROOT}"
+	sudo cp /tmp/Linux${RELEASE}${VERSION}/SteamdeckVersion/Lightgun/*.so "${SOFTWARE_ROOT}"
+	sudo cp /tmp/Linux${RELEASE}${VERSION}/SteamdeckVersion/Lightgun/LightgunMono* "${SOFTWARE_ROOT}"
+	sudo chmod +x ${SOFTWARE_ROOT}/LightgunMono*
+}
+
+############################
 # Pre-requisites
 ############################
 
@@ -40,17 +55,19 @@ fi
 mkdir -p ${BIN_DIR}
 mkdir -p "${CONFIG_BACKUP}"
 
-function install () {
-	sudo rm -rf ${SOFTWARE_ROOT}
-	sudo mkdir -p "${SOFTWARE_ROOT}"
-	echo "[INFO] Fetching Sinden software from ${DOWNLOAD_URL}"
-	curl -Lo "/tmp/sinden-lightgun-linux.zip" "${DOWNLOAD_URL}"
-	unzip -o "/tmp/sinden-lightgun-linux.zip" -d "/tmp"
-	sudo cp -r ${GIT_ROOT}/* "${SOFTWARE_ROOT}"
-	sudo cp /tmp/Linux${RELEASE}${VERSION}/SteamdeckVersion/Lightgun/*.so "${SOFTWARE_ROOT}"
-	sudo cp /tmp/Linux${RELEASE}${VERSION}/SteamdeckVersion/Lightgun/LightgunMono* "${SOFTWARE_ROOT}"
-	sudo chmod +x ${SOFTWARE_ROOT}/LightgunMono*
-}
+# Unlock the OS if we are using ChimeraOS/Steam Deck
+if [[ -f "/usr/bin/frzr-unlock" ]]; then
+	echo "[INFO] unlocking immutable OS"
+	sudo frzr-unlock
+	sudo pacman-key --init
+	sudo pacman-key --populate archlinux
+elif which steamos-readonly &> /dev/null; then
+	echo "[INFO] unlocking immutable OS"
+	sudo steamos-readonly disable
+	sudo pacman-key --init
+	sudo pacman-key --populate holo
+fi
+
 
 # Software license notes we cannot distribute the software
 # Download from drivers page directly
@@ -88,20 +105,6 @@ echo "[INFO] Reloading UDEV rules and service"
 sudo udevadm control --reload-rules
 sudo udevadm trigger
 
-# Unlock the OS if we are using ChimeraOS/Steam Deck
-if which frzr-unlock &> /dev/null; then
-	echo "[INFO] unlocking immutable OS"
-	sudo frzr-unlock
-	sudo pacman-key --init
-	sudo pacman-key --populate archlinux
-elif which steamos-readonly &> /dev/null; then
-	echo "[INFO] unlocking immutable OS"
-	sudo frzr-unlock
-	sudo steamos-readonly disable
-	sudo pacman-key --init
-	sudo pacman-key --populate holo
-fi
-
 # pre-req software
 if [[ "${OS_TYPE}" == "arch" ]]; then
 	echo "[INFO] Installing prerequisite packages for Arch Linux systems"
@@ -110,12 +113,6 @@ if [[ "${OS_TYPE}" == "arch" ]]; then
 elif [[ "${OS_TYPE}" =~ "debian" ]]; then
 	echo "[INFO] Installing prerequisite packages for Debian-like systems"
 	sudo apt-get install -y at mono-complete v4l-utils libsdl1.2-dev
-fi
-
-# Relock OS if using SteamOS/Steam Deck
-if which steamos-readonly &> /dev/null; then
-	echo "[INFO] Relocking SteamOS"
-	sudo steamos-readonly enable
 fi
 
 ############################
@@ -164,6 +161,12 @@ fi
 ############################
 # Finish
 ############################
+
+# Relock OS if using SteamOS/Steam Deck
+if which steamos-readonly &> /dev/null; then
+	echo "[INFO] Relocking SteamOS"
+	sudo steamos-readonly enable
+fi
 
 echo -e "[INFO] Done!"
 echo "[INFO] Please log out and back in to apply group permission updates"
