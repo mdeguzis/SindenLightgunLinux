@@ -87,7 +87,6 @@ sudo sed -i "s|SOFTWARE_ROOT|${SOFTWARE_ROOT}|g" "/etc/udev/rules.d/99-sinden.ru
 echo "[INFO] Reloading UDEV rules and service"
 sudo udevadm control --reload-rules
 sudo udevadm trigger
-sudo systemctl restart udev.service
 
 # Unlock the OS if we are using ChimeraOS/Steam Deck
 if which frzr-unlock &> /dev/null; then
@@ -146,12 +145,13 @@ fi
 ############################
 # Borders
 ############################
-echo -e "[INFO] Copying Sinden Border Overlays for Retroarch"
 if [[ -d "${HOME}/.var/app/org.libretro.RetroArch" ]]; then
 	retroarch_overlays_dir="$(find ${HOME}/.local/share/flatpak/app/org.libretro.RetroArch -regex ".*libretro/overlays")/borders"
 else
 	retroarch_overlays_dir="${HOME}/.config/retroarch/overlays/borders"
 fi
+
+echo -e "[INFO] Copying Sinden Border Overlays for Retroarch to: ${retroarch_overlays_dir}"
 cp -r ${GIT_ROOT}/overlays/retroarch/* ${retroarch_overlays_dir}
 
 # For the time being, assume ES-DE-compliant MAME dir
