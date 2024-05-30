@@ -4,8 +4,8 @@ set -e -o pipefail
 
 # https://sindenlightgun.com/drivers/
 VERSION="2.07"
-RELEASE="Beta"
-DOWNLOAD_URL="https://www.sindenlightgun.com/software/Linux${RELEASE}${VERSION}.zip"
+RELEASE="Release"
+DOWNLOAD_URL="https://www.sindenlightgun.com/software/SindenLightgunSoftwareReleaseV${VERSION}.zip"
 GIT_ROOT=$(git rev-parse --show-toplevel)
 SOFTWARE_ROOT="/opt/sinden-lightgun"
 TS=$(date +%s)
