@@ -3,7 +3,7 @@
 set -e -o pipefail
 
 # https://sindenlightgun.com/drivers/
-VERSION="2.05c"
+VERSION="2.07"
 RELEASE="Beta"
 DOWNLOAD_URL="https://www.sindenlightgun.com/software/Linux${RELEASE}${VERSION}.zip"
 GIT_ROOT=$(git rev-parse --show-toplevel)
