@@ -3,14 +3,17 @@
 set -e -o pipefail
 
 # https://sindenlightgun.com/drivers/
-VERSION="2.07"
-RELEASE="Release"
-DOWNLOAD_URL="https://www.sindenlightgun.com/software/SindenLightgunSoftwareReleaseV${VERSION}.zip"
+# For some reason, the main download is a different version at the moment (2024-06-09)
+MAIN_VERSION="V2.07"
+LINUX_VERSION="V2.05"
+DOWNLOAD_URL="https://www.sindenlightgun.com/software/SindenLightgunSoftwareRelease${MAIN_VERSION}.zip"
 GIT_ROOT=$(git rev-parse --show-toplevel)
 SOFTWARE_ROOT="/opt/sinden-lightgun"
 TS=$(date +%s)
 BIN_DIR="${HOME}/.local/bin"
 CONFIG_BACKUP="${HOME}/.config/sinden/backups"
+
+set -e
 
 ############################
 # Functions
@@ -18,12 +21,13 @@ CONFIG_BACKUP="${HOME}/.config/sinden/backups"
 function install () {
 	sudo rm -rf ${SOFTWARE_ROOT}
 	sudo mkdir -p "${SOFTWARE_ROOT}"
+	rm -rf /tmp/SindenLightgunLinux*
 	echo "[INFO] Fetching Sinden software from ${DOWNLOAD_URL}"
-	curl -Lo "/tmp/sinden-lightgun-linux.zip" "${DOWNLOAD_URL}"
-	unzip -o "/tmp/sinden-lightgun-linux.zip" -d "/tmp"
+	curl -Lo "/tmp/sinden-lightgun.zip" "${DOWNLOAD_URL}"
+	unzip -o "/tmp/sinden-lightgun.zip" -d "/tmp"
 	sudo cp -r ${GIT_ROOT}/* "${SOFTWARE_ROOT}"
-	sudo cp /tmp/Linux${RELEASE}${VERSION}/SteamdeckVersion/Lightgun/*.so "${SOFTWARE_ROOT}"
-	sudo cp /tmp/Linux${RELEASE}${VERSION}/SteamdeckVersion/Lightgun/LightgunMono* "${SOFTWARE_ROOT}"
+	sudo cp /tmp/SindenLightgunLinuxSoftware${LINUX_VERSION}/SteamdeckVersion/Lightgun/*.so "${SOFTWARE_ROOT}"
+	sudo cp /tmp/SindenLightgunLinuxSoftware${LINUX_VERSION}/SteamdeckVersion/Lightgun/LightgunMono* "${SOFTWARE_ROOT}"
 	sudo chmod +x ${SOFTWARE_ROOT}/LightgunMono*
 }
 
@@ -61,6 +65,7 @@ if [[ -f "/usr/bin/frzr-unlock" ]]; then
 	sudo frzr-unlock
 	sudo pacman-key --init
 	sudo pacman-key --populate archlinux
+
 elif which steamos-readonly &> /dev/null; then
 	echo "[INFO] unlocking immutable OS"
 	sudo steamos-readonly disable
